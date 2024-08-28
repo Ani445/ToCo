@@ -2,7 +2,7 @@ import argparse
 import os
 import sys
 
-sys.path.append("/content/toco/")
+sys.path.append("/content/ToCo/")
 
 from collections import OrderedDict
 import imageio
