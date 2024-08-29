@@ -72,7 +72,7 @@ parser.add_argument("--aux_layer", default=-3, type=int, help="aux_layer")
 parser.add_argument("--seed", default=0, type=int, help="fix random seed")
 parser.add_argument("--save_ckpt", action="store_true", help="save_ckpt")
 
-parser.add_argument("--local_rank", default=-1, type=int, help="local_rank")
+# parser.add_argument("--local_rank", default=-1, type=int, help="local_rank")
 parser.add_argument("--num_workers", default=10, type=int, help="num_workers")
 parser.add_argument('--backend', default='nccl')
 
@@ -341,7 +341,7 @@ def train(args=None):
 if __name__ == "__main__":
 
     args = parser.parse_args()
-    args.local_rank = os.environ['LOCAL_RANK']
+    args.local_rank = int(os.environ['LOCAL_RANK'])
 
     timestamp = "{0:%Y-%m-%d-%H-%M-%S-%f}".format(datetime.datetime.now())
     args.work_dir = os.path.join(args.work_dir, timestamp)
