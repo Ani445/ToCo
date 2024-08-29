@@ -141,7 +141,7 @@ def validate(model=None, data_loader=None, args=None):
 
 def train(args=None):
 
-    torch.cuda.set_device(os.environ['LOCAL_RANK'])
+    torch.cuda.set_device(args.local_rank)
     dist.init_process_group(backend=args.backend, )
     logging.info("Total gpus: %d, samples per gpu: %d..."%(dist.get_world_size(), args.spg))
 
@@ -190,7 +190,7 @@ def train(args=None):
                             pin_memory=False,
                             drop_last=False)
 
-    device = torch.device(os.environ['LOCAL_RANK'])
+    device = torch.device(args.local_rank)
 
     model = network(
         backbone=args.backbone,
@@ -235,7 +235,7 @@ def train(args=None):
         power=args.power)
 
     logging.info('\nOptimizer: \n%s' % optim)
-    model = DistributedDataParallel(model, device_ids=[os.environ['LOCAL_RANK']], find_unused_parameters=True)
+    model = DistributedDataParallel(model, device_ids=[args.local_rank], find_unused_parameters=True)
 
     train_sampler.set_epoch(np.random.randint(args.max_iters))
     train_loader_iter = iter(train_loader)
@@ -321,17 +321,17 @@ def train(args=None):
             delta, eta = cal_eta(time0, n_iter + 1, args.max_iters)
             cur_lr = optim.param_groups[0]['lr']
 
-            if os.environ['LOCAL_RANK'] == 0:
+            if args.local_rank == 0:
                 logging.info("Iter: %d; Elasped: %s; ETA: %s; LR: %.3e; cls_loss: %.4f, cls_loss_aux: %.4f, ptc_loss: %.4f, ctc_loss: %.4f, seg_loss: %.4f..." % (n_iter + 1, delta, eta, cur_lr, avg_meter.pop('cls_loss'), avg_meter.pop('cls_loss_aux'), avg_meter.pop('ptc_loss'), avg_meter.pop('ctc_loss'), avg_meter.pop('seg_loss')))
 
         if (n_iter + 1) % args.eval_iters == 0:
             ckpt_name = os.path.join(args.ckpt_dir, "model_iter_%d.pth" % (n_iter + 1))
-            if os.environ['LOCAL_RANK'] == 0:
+            if args.local_rank == 0:
                 logging.info('Validating...')
                 if args.save_ckpt:
                     torch.save(model.state_dict(), ckpt_name)
             val_cls_score, tab_results = validate(model=model, data_loader=val_loader, args=args)
-            if os.environ['LOCAL_RANK'] == 0:
+            if args.local_rank == 0:
                 logging.info("val cls score: %.6f" % (val_cls_score))
                 logging.info("\n"+tab_results)
 
@@ -347,7 +347,7 @@ if __name__ == "__main__":
     args.ckpt_dir = os.path.join(args.work_dir, "checkpoints")
     args.pred_dir = os.path.join(args.work_dir, "predictions")
 
-    if os.environ['LOCAL_RANK'] == 0:
+    if args.local_rank == 0:
         os.makedirs(args.ckpt_dir, exist_ok=True)
         os.makedirs(args.pred_dir, exist_ok=True)
 
