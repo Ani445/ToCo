@@ -124,14 +124,14 @@ def train(args=None):
 
     # (Loss layers and training loop...)
 
-        inputs = inputs.to(device, non_blocking=True)
-        cls_label = cls_label.to(device, non_blocking=True)
+    inputs = inputs.to(device, non_blocking=True)
+    cls_label = cls_label.to(device, non_blocking=True)
 
-        # (Main training logic...)
+    # (Main training logic...)
 
-        optim.zero_grad()
-        loss.backward()
-        optim.step()
+    optim.zero_grad()
+    loss.backward()
+    optim.step()
 
         # (Logging and checkpoint saving...)
 
