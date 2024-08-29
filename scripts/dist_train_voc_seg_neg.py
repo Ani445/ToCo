@@ -341,7 +341,7 @@ def train(args=None):
 if __name__ == "__main__":
 
     args = parser.parse_args()
-    # args.local_rank = int(os.environ['LOCAL_RANK'])
+    args.local_rank = int(os.environ['LOCAL_RANK'])
 
     timestamp = "{0:%Y-%m-%d-%H-%M-%S-%f}".format(datetime.datetime.now())
     args.work_dir = os.path.join(args.work_dir, timestamp)
