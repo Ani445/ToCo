@@ -5,7 +5,7 @@ import os
 import random
 import sys
 
-sys.path.append(".")
+sys.path.append("/content/ToCo/")
 
 import numpy as np
 import torch
@@ -29,8 +29,8 @@ parser.add_argument("--backbone", default='deit_base_patch16_224', type=str, hel
 parser.add_argument("--pooling", default='gmp', type=str, help="pooling choice for patch tokens")
 parser.add_argument("--pretrained", default=True, type=bool, help="use imagenet pretrained weights")
 
-parser.add_argument("--data_folder", default='../VOCdevkit/VOC2012', type=str, help="dataset folder")
-parser.add_argument("--list_folder", default='datasets/voc', type=str, help="train/val/test list file")
+parser.add_argument("--data_folder", default='content/VOCdevkit/VOC2012', type=str, help="dataset folder")
+parser.add_argument("--list_folder", default='content/ToCo/datasets/voc', type=str, help="train/val/test list file")
 parser.add_argument("--num_classes", default=21, type=int, help="number of classes")
 parser.add_argument("--crop_size", default=448, type=int, help="crop_size in training")
 parser.add_argument("--local_crop_size", default=96, type=int, help="crop_size for local view")
